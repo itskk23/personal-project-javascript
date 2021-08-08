@@ -27,12 +27,13 @@ class Transaction {
                     message: err.message,
                     stack: err.stack
                 }
-                console.log('obj1', obj);
+               
                 for (let i = obj - 1; i >= 0; i--) {
-                    if (scenario[i].hasOwnProperty("restore")) {
+                    if (scenario[i].hasOwnProperty("restore")) { 
                         await scenario[i].restore(this.store);
                         this.store = this.logs[i].storeBefore;
-                        // console.log(this.store);  
+                        console.log(this.store);  
+                        
                     }
                 }
                 break;
