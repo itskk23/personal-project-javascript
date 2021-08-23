@@ -28,14 +28,15 @@ class Transaction {
                     message: err.message,
                     stack: err.stack
                 }
+                this.logs.push(item);
+                console.log(this.logs)
                 for (let i = obj - 1; i >= 0; i--) {
                     if (scenario[i].hasOwnProperty("restore")) { 
                         await scenario[i].restore(this.store);
                         this.store = this.logs[i].storeBefore;
-                        // console.log(this.store);  
                     }
                 }
-                break;
+                throw new Error(err.message);
             }
 
         }
@@ -46,12 +47,15 @@ const transaction = new Transaction();
 (async () => {
     try {
         await transaction.dispatch(scenario);
+        // throw new Error('ezuga')
         const store = transaction.store; // {} | null
         // console.log(store) ცარიელი ბრუნდება
         const logs = transaction.logs; // []
+        // console.log(logs)
         
     } catch (err) {
-        console.log(err.message)
+        console.log(err.message);
+        // console.log(transaction.logs)
     }
 })();
 

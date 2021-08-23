@@ -7,6 +7,8 @@ export const scenario = [
         },
         // callback for main execution
         call: async (store) => {
+        //    throw new Error('chito magaria')
+           
             store.nashti = 100;
         },
         // callback for rollback
@@ -22,6 +24,9 @@ export const scenario = [
         },
         // callback for main execution
         call: async (store) => {
+            
+                // throw new Error('call function didnt happen')
+            
             store.nashti = 200;
         },
         // callback for rollback
@@ -38,6 +43,7 @@ export const scenario = [
         },
         // callback for main execution
         call: async (store) => {
+                // throw new Error('call function didnt happen');
             store.nashti = 300;
         },
         // callback for rollback
