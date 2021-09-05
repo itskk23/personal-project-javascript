@@ -1,15 +1,22 @@
-import {scenario} from './scenario.mjs';
-import {validation} from './validation.mjs';
+import {scenario} from './scenario.js';
+import {IScenario, Item, IStore, EStatus} from './gadgets';
+
+
 class Transaction {
-    async dispatch(scenario) {
-        validation(scenario);
+    store: IStore<any>;
+    logs: IStore<any>[];
+    constructor(){
+        this.store = {},
+        this.logs = []
+    }
+
+    async dispatch(scenario: Array<IScenario>) {
+        
         if(scenario instanceof Array == false){
-            throw new Error('Scenario is not an array');
+            throw new Error( EStatus.fail + 'Scenario is not an array');
         }
-        this.store = {};
-        this.logs = [];
         for (let obj in scenario) {
-            let item = {
+            let item: Item = {
                 index: scenario[obj].index,
                 meta: scenario[obj].meta,
                 storeBefore: {},
@@ -21,22 +28,22 @@ class Transaction {
                 await scenario[obj].call(this.store);
                 Object.assign(item.storeAfter, this.store);
                 this.logs.push(item);
-            } catch (err) {
+            } catch (err:any) {
                 Object.assign(item.storeAfter, this.store);
                 item.error = {
                     name: err.name,
-                    message: err.message,
+                    message: err.message + EStatus.fail,
                     stack: err.stack
                 }
                 this.logs.push(item);
                 console.log(this.logs)
-                for (let i = obj - 1; i >= 0; i--) {
+                for (let i = parseInt(obj) - 1; i >= 0; i--) {
                     if (scenario[i].hasOwnProperty("restore")) { 
                         await scenario[i].restore(this.store);
                         this.store = this.logs[i].storeBefore;
                     }
                 }
-                throw new Error(err.message);
+                throw new Error(item.error.message);
             }
 
         }
@@ -53,7 +60,7 @@ const transaction = new Transaction();
         const logs = transaction.logs; // []
         // console.log(logs)
         
-    } catch (err) {
+    } catch (err:any) {
         console.log(err.message);
         // console.log(transaction.logs)
     }

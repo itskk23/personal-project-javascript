@@ -1,4 +1,8 @@
-export const scenario = [
+
+import { IScenario } from "./gadgets";
+
+export const scenario:IScenario [] = [
+    
     {
         index: 1,
         meta: {
